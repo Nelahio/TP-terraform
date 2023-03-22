@@ -5,7 +5,6 @@ variable "environment_suffix" {
 
 variable "location" {
   type = string
-  default = "West Europe"
 }
 
 variable "project_name" {
