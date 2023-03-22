@@ -10,5 +10,4 @@ variable "location" {
 
 variable "project_name" {
   type = string
-  default = "adislaire"
 }
