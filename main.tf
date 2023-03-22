@@ -9,4 +9,12 @@ terraform {
 
 provider "azurerm" {
   # Configuration options
+  features {
+    
+  }
+}
+
+resource "azurerm_resource_group" "rg-maalsi" {   
+  name     = "rg-adislaire"
+  location = "West Europe"
 }
