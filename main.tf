@@ -17,6 +17,7 @@ provider "azurerm" {
   }
 }
 
+# Database
 resource "azurerm_mssql_server" "sql-srv" {
   name                         = "sqlsrv-${var.project_name}${var.environment_suffix}"
   resource_group_name          = data.azurerm_resource_group.rg-maalsi.name
@@ -26,7 +27,6 @@ resource "azurerm_mssql_server" "sql-srv" {
   administrator_login_password = data.azurerm_key_vault_secret.database-password.value
 }
 
-# Database
 resource "azurerm_mssql_database" "sql-db" {
   name           = "RabbitMqDemo"
   server_id      = azurerm_mssql_server.sql-srv.id
