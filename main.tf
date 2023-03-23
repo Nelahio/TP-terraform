@@ -53,7 +53,11 @@ resource "azurerm_linux_web_app" "web-app" {
   location            = azurerm_service_plan.app-plan.location
   service_plan_id     = azurerm_service_plan.app-plan.id
 
-  site_config {}
+  site_config {
+    application_stack {
+      dotnet_version = "6.0"
+    }
+  }
 
   connection_string {
     name = "DefaultConnection"
