@@ -27,6 +27,13 @@ resource "azurerm_mssql_server" "sql-srv" {
   administrator_login_password = data.azurerm_key_vault_secret.database-password.value
 }
 
+resource "azurerm_mssql_firewall_rule" "sql-srv" {
+  name             = "AllowAzureServices"
+  server_id        = azurerm_mssql_server.sql-srv.id
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
+}
+
 resource "azurerm_mssql_database" "sql-db" {
   name           = "RabbitMqDemo"
   server_id      = azurerm_mssql_server.sql-srv.id
