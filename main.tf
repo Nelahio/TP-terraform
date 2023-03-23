@@ -40,3 +40,25 @@ resource "azurerm_mssql_database" "sql-db" {
     foo = "bar"
   }
 }
+
+resource "azurerm_service_plan" "app-plan" {
+  name                = "plan-${var.project_name}${var.environment_suffix}"
+  resource_group_name = data.azurerm_resource_group.rg-maalsi.name
+  location            = data.azurerm_resource_group.rg-maalsi.location
+  os_type             = "Linux"
+  sku_name            = "P1v2"
+}
+
+resource "azurerm_linux_web_app" "web-app" {
+  name                = "web-app-${var.project_name}${var.environment_suffix}"
+  resource_group_name = data.azurerm_resource_group.rg-maalsi.name
+  location            = azurerm_service_plan.app-plan.location
+  service_plan_id     = azurerm_service_plan.app-plan.id
+
+  site_config {}
+  
+  connection_string {
+    name = "DefaultConnection"
+    value = "Server=tcp:${azurerm_mssql_server.sql-srv.fully_qualified_domain_name},1433;Initial Catalog=${azurerm_mssql_database.sql-db.name};Persist Security Info=False;User ID=${data.azurerm_key_vault_secret.database-login.value};Password=${data.azurerm_key_vault_secret.database-password.value};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  }
+}
