@@ -110,3 +110,27 @@ resource "azurerm_container_group" "rabbitmq" {
     }
   }
 }
+
+#Console Container Instance
+resource "azurerm_container_group" "console" {
+  name                = "aci-console-${var.project_name}${var.environment_suffix}"
+  resource_group_name = data.azurerm_resource_group.rg-maalsi.name
+  location            = data.azurerm_resource_group.rg-maalsi.location
+  ip_address_type     = "None"
+  dns_name_label      = "aci-console-${var.project_name}${var.environment_suffix}"
+  os_type             = "Linux"
+  exposed_port = []
+
+  container {
+    name   = "console"
+    image  = "matthieuf/pubsub-console:1.0"
+    cpu    = "0.5"
+    memory = "1.5"
+
+    environment_variables = {
+      "RabbitMQ__Hostname" = azurerm_container_group.rabbitmq.fqdn,
+      "RabbitMQ__Username" = data.azurerm_key_vault_secret.rabbitmq-login.value,
+      "RabbitMQ__Password" = data.azurerm_key_vault_secret.rabbitmq-password.value
+    }
+  }
+}
